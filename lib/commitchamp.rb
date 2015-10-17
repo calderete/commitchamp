@@ -48,9 +48,13 @@ module Commitchamp
 			repo = gets.chomp.downcase
 			puts "CONTRIBUTORS"
 		    names = self.get_data(owner, repo)
-		    names.each { |x| puts x["author"]["login"] }
-			binding.pry
-		end
+		   username = names.each do |x| @user = x["author"]["login"]
+		   						 end 
+		   	data = {
+		   		user:  @user
+		   	}
+		   	binding.pry
+		 end
 
 		def get_data(owner, repo)
 			PullRequests.get("/repos/#{owner}/#{repo}/stats/contributors", :headers => @auth)
