@@ -16,7 +16,7 @@ module Commitchamp
     	if choice == "lc"
     		@search.get_authors
     	elsif choice == "a"
-    		@search.get_commits
+    		@search.get_repo_stats
     	else
     		puts "Good bye"
     	end
@@ -48,32 +48,31 @@ module Commitchamp
 			repo = gets.chomp.downcase
 			puts "CONTRIBUTORS"
 		    names = self.get_data(owner, repo)
-		    user = names.each do |x| puts x["author"]["login"]
-		   		 	
-		   		 	         end
-		   	data = {
-		   		username:  user
-		   	}
-		   	binding.pry
+		    contributors = names.each do |x| puts x["author"]["login"]
+		    						  end
+		    
 		 end
 
 		def get_data(owner, repo)
 			PullRequests.get("/repos/#{owner}/#{repo}/stats/contributors", :headers => @auth)
 		end
 
-		def get_commits
+		def get_repo_stats
 			puts "Who is the owner?"
 			owner = gets.chomp.downcase
 			puts "Which repo?"
 			repo = gets.chomp.downcase
-			response = self.get_data(owner, repo)
-			total = response.each {|y| y["total"]}
-			commits = response.each do |x| week = x["weeks"]
-									 ads = week.each do |y| puts y["a"] 
-										end
-									end 
-			
-		end
+			data = self.get_data(owner, repo)
+					
+			stats_data = []
+			data.each do |x|
+				author = x["author"]["login"]
+				a_sum  = x["weeks"].inject(0) { |sum,hash| sum + hash["a"]}
+
+				stats_data.push({author: author, a: a_sum})
+			end
+			binding.pry
+			end
 
 		
 
