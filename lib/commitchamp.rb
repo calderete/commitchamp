@@ -64,6 +64,8 @@ module Commitchamp
 			repo = gets.chomp.downcase
 			get_stats_hash(owner, repo)
 		end
+
+		#This method was once part of the get_repo_stats, I broke it apart so I dont have to keep rewriting it
 		def get_stats_hash(owner, repo)
 			data = self.get_data(owner, repo)
 			@stats_data = []
@@ -78,10 +80,21 @@ module Commitchamp
 								 deletions: d_sum, 
 								 commits:   c_sum})
 			end
+			binding.pry
 			puts @stats_data
-			
+			sort_options
 			end
 
+		def sort_options
+			additions = @stats_data.sort_by {|author, additions| additions}
+			puts "Would you like to sort by additions?"
+			choice = gets.chomp.downcase
+			if choice == "y"
+				puts additions
+			else
+				puts "goodbye"
+			end
+		end
 		
 
 	end
