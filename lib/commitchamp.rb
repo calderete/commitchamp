@@ -8,14 +8,11 @@ module Commitchamp
   class App
     def initialize
     	@search = PullRequests.new
-    	puts "Welcome to CommitChamp!"
-    	puts "Please make a choice"
-    	puts "'lc' for a list of contributors"
-    	puts "'a' for number of additions"
+    	puts "Welcome to CommitChamp"
+    	puts "To begin investigating repo stats type 'begin'"
+    	puts "Type any other letter to quit"
     	choice = gets.chomp.downcase
-    	if choice == "lc"
-    		@search.get_authors
-    	elsif choice == "a"
+    	if choice == "begin"
     		@search.get_repo_stats
     	else
     		puts "Good bye"
@@ -50,7 +47,8 @@ module Commitchamp
 		    names = self.get_data(owner, repo)
 		    contributors = names.each do |x| puts x["author"]["login"]
 		    						  end
-		    
+
+			sort_options    
 		 end
 
 		def get_data(owner, repo)
@@ -80,20 +78,34 @@ module Commitchamp
 								 deletions: d_sum, 
 								 commits:   c_sum})
 			end
-			binding.pry
 			puts @stats_data
 			sort_options
 			end
 
 		def sort_options
-			additions = @stats_data.sort_by {|author, additions| additions}
-			puts "Would you like to sort by additions?"
+			additions = @stats_data.sort_by {|k| k[:additions]}
+			deletions = @stats_data.sort_by {|k| k[:deletions]}
+			commits   = @stats_data.sort_by {|k| k[:commits]}
+			puts "To sort by additions type 'a'"
+			puts "To sort by deletions type 'd'"
+			puts "To sort by commits type 'c'"
+			puts "Type 'sort' to sort again CNTRL D to quit or 'back' 
+				  for another repo search"
 			choice = gets.chomp.downcase
-			if choice == "y"
+			if choice == "a"
 				puts additions
+			elsif choice == "d"
+				puts deletions
+			elsif choice == "c"
+				puts commits
+			elsif choice == "back"
+				Commitchamp::App.new
+			elsif choice == "sort"
+				sort_options 
 			else
-				puts "goodbye"
+				puts "Goodbye, come visit CommitChamp again soon!"
 			end
+			sort_options
 		end
 		
 
