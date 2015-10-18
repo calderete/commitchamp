@@ -62,16 +62,24 @@ module Commitchamp
 			owner = gets.chomp.downcase
 			puts "Which repo?"
 			repo = gets.chomp.downcase
+			get_stats_hash(owner, repo)
+		end
+		def get_stats_hash(owner, repo)
 			data = self.get_data(owner, repo)
-					
-			stats_data = []
+			@stats_data = []
 			data.each do |x|
 				author = x["author"]["login"]
 				a_sum  = x["weeks"].inject(0) { |sum,hash| sum + hash["a"]}
+				d_sum  = x["weeks"].inject(0) { |sum,hash| sum + hash["d"]}
+				c_sum  = x["weeks"].inject(0) { |sum,hash| sum + hash["c"]}
 
-				stats_data.push({author: author, a: a_sum})
+				@stats_data.push({author:    author, 
+								 additions: a_sum, 
+								 deletions: d_sum, 
+								 commits:   c_sum})
 			end
-			binding.pry
+			puts @stats_data
+			
 			end
 
 		
