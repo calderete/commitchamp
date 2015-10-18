@@ -48,16 +48,11 @@ module Commitchamp
 			repo = gets.chomp.downcase
 			puts "CONTRIBUTORS"
 		    names = self.get_data(owner, repo)
-		    user = names.each do |x| name = x["author"]["login"]
-		   		 	  name.each do |y|  weeks = y["weeks"]
-		   		 add = weeks.each do |z| adds = z["a"]
-		   					 	  end
-		   					 	end
-		   					 end
-		   			   
+		    user = names.each do |x| puts x["author"]["login"]
+		   		 	
+		   		 	         end
 		   	data = {
-		   		user:      user,
-		   		additions: add
+		   		username:  user
 		   	}
 		   	binding.pry
 		 end
