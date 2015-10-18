@@ -1,5 +1,6 @@
 require "httparty"
 require "pry"
+require "awesome_print"
 
 require "commitchamp/version"
 # Probably you also want to add a class for talking to github.
@@ -8,14 +9,14 @@ module Commitchamp
   class App
     def initialize
     	@search = PullRequests.new
-    	puts "Welcome to CommitChamp"
-    	puts "To begin investigating repo stats type 'begin'"
-    	puts "Type any other letter to quit"
+    	ap "Welcome to CommitChamp"
+    	ap "To begin investigating repo stats type 'begin'"
+    	ap "Type any other letter to quit"
     	choice = gets.chomp.downcase
     	if choice == "begin"
     		@search.get_repo_stats
     	else
-    		puts "Good bye"
+    		ap "Good bye"
     	end
     end
 
@@ -30,7 +31,7 @@ module Commitchamp
 		include HTTParty
 		base_uri "https://api.github.com"
 		def initialize
-			puts "What is your authorization token?"
+			ap  "What is your authorization token?"
 			auth_token = gets.chomp
 			@auth = {
 				"Authorization" => "token #{auth_token}",
@@ -39,9 +40,9 @@ module Commitchamp
 		end
 
 		def get_authors
-			puts "Which organization do you want to search?"
+			ap "Which organization do you want to search?"
 			owner = gets.chomp.downcase
-			puts "Which repository do you want to look into?"
+			ap "Which repository do you want to look into?"
 			repo = gets.chomp.downcase
 			puts "CONTRIBUTORS"
 		    names = self.get_data(owner, repo)
@@ -78,7 +79,7 @@ module Commitchamp
 								 deletions: d_sum, 
 								 commits:   c_sum})
 			end
-			puts @stats_data
+			ap @stats_data
 			sort_options
 			end
 
@@ -86,18 +87,17 @@ module Commitchamp
 			additions = @stats_data.sort_by {|k| k[:additions]}
 			deletions = @stats_data.sort_by {|k| k[:deletions]}
 			commits   = @stats_data.sort_by {|k| k[:commits]}
-			puts "To sort by additions type 'a'"
-			puts "To sort by deletions type 'd'"
-			puts "To sort by commits type 'c'"
-			puts "Type 'sort' to sort again CNTRL D to quit or 'back' 
-				  for another repo search"
+			ap "To sort by lines added type 'a'"
+			ap "To sort by lines deleted type 'd'"
+			ap "To sort by commits made type 'c'"
+			ap "Type 'sort' to sort again CNTRL D to quit or 'back for another repo search"
 			choice = gets.chomp.downcase
 			if choice == "a"
-				puts additions
+				ap additions
 			elsif choice == "d"
-				puts deletions
+				ap deletions
 			elsif choice == "c"
-				puts commits
+				ap commits
 			elsif choice == "back"
 				Commitchamp::App.new
 			elsif choice == "sort"
